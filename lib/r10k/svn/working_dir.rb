@@ -37,7 +37,7 @@ module R10K
       def initialize(path, opts = {})
         @path = path
 
-        setopts(opts, [:username, :password])
+        setopts(opts, {:username => :self, :password => :self})
 
         if !!(@username) ^ !!(@password)
           raise ArgumentError, "Both username and password must be specified"
