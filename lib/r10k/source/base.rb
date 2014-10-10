@@ -30,6 +30,7 @@ class R10K::Source::Base
     @name    = name
     @basedir = basedir
     @prefix  = options.delete(:prefix)
+    @prefix_name  = options.delete(:prefix_name)
     @options = options
   end
 

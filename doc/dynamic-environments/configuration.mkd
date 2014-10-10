@@ -121,6 +121,29 @@ sources:
     basedir: '/etc/puppet/environments'
     prefix: true # All environments will be prefixed with "mysource_"
 ```
+### prefix_name
+
+Optional.
+Requires `prefix` to be set.
+
+To override the prefix name from the source name, use `prefix_name`.  This is
+useful when you have multiple sources with different basedir's, and you want
+your prefix_name to be congruent between sources.  Specifically useful when
+your hieradata is kept in a separate repository.
+
+```yaml
+---
+sources:
+  mysource1:
+    basedir: '/etc/puppet/environments'
+    prefix: true
+    prefix_name: app1 # will be prefixed with "app1_" instead of mysource1_
+  mysource2:
+    basedir: '/etc/puppet/hieradata'
+    prefix: true
+    prefix_name: app1 # will be prefixed with "app1_" instead of mysource2_
+```
+
 
 Examples
 --------

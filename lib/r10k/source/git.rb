@@ -85,6 +85,7 @@ class R10K::Source::Git < R10K::Source::Base
   def generate_environments
     envs = []
     branch_names.each do |bn|
+      puts bn.inspect
       if bn.valid?
         envs << R10K::Environment::Git.new(bn.name, @basedir, bn.dirname,
                                        {:remote => remote, :ref => bn.name})
@@ -128,9 +129,10 @@ class R10K::Source::Git < R10K::Source::Base
   def branch_names
     @cache.branches.map do |branch|
       BranchName.new(branch, {
-        :prefix     => @prefix,
-        :sourcename => @name,
-        :invalid    => @invalid_branches,
+        :prefix       => @prefix,
+        :prefix_name  => @prefix_name,
+        :sourcename   => @name,
+        :invalid      => @invalid_branches,
       })
     end
   end
@@ -147,6 +149,7 @@ class R10K::Source::Git < R10K::Source::Base
       @opts = opts
 
       @prefix = opts[:prefix]
+      @prefix_name = opts[:prefix_name]
       @sourcename = opts[:sourcename]
       @invalid = opts[:invalid]
 
@@ -181,7 +184,11 @@ class R10K::Source::Git < R10K::Source::Base
       dir = @name.dup
 
       if @prefix
-        dir = "#{@sourcename}_#{dir}"
+        if @prefix_name.to_s != ''
+          dir = "#{@prefix_name}_#{dir}"
+        else
+          dir = "#{@sourcename}_#{dir}"
+        end
       end
 
       if @correct

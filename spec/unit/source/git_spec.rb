@@ -140,6 +140,37 @@ describe R10K::Source::Git, 'when prefixing is enabled' do
   end
 end
 
+describe R10K::Source::Git, 'when prefixing is enabled, and the prefix name is overridden' do
+  subject do
+    described_class.new(
+      'prefixed_will_be_overridden',
+      '/some/nonexistent/dir',
+      {
+        :prefix       => true,
+        :prefix_name  => 'app1',
+        :remote       => 'https://git-server/repo.git',
+      })
+  end
+
+  describe "generating prefixed environments" do
+    before do
+      allow(subject.cache).to receive(:cached?).and_return true
+      allow(subject.cache).to receive(:branches).and_return %w[master other]
+    end
+
+    let(:environments) { subject.environments }
+
+    it "creates an environment for each branch" do
+      expect(subject.environments).to have(2).items
+    end
+
+    it "prefixes the source name to environments when prefixing is enabled" do
+      expect(environments[0].dirname).to eq 'app1_master'
+      expect(environments[1].dirname).to eq 'app1_other'
+    end
+  end
+end
+
 describe R10K::Source::Git, 'registering as a source' do
   it "registers with the :git key" do
     expect(R10K::Source.retrieve(:git)).to eq described_class
